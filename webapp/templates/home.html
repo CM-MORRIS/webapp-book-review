@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Home{% endblock %}</title>
+        <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+        integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
+        crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container">
+            {% block body %}
+              <form action="{{ url_for('register') }}" method="post">
+                <p>
+                  <input type="text" name="username" placeholder="username">
+                </p>
+                <p>
+                  <input type="text" name="email" placeholder="email">
+                </p>
+                <p>
+                  <input type="text" name="password" placeholder="password">
+                </p>
+                  <button>Register</button>
+              </form>
+
+              <form action="{{ url_for('login') }}" method="post">
+                <p>
+                  <input type="text" name="username" placeholder="username">
+                </p>
+                <p>
+                  <input type="text" name="password" placeholder="password">
+                </p>
+                  <button>Login</button>
+              </form>
+            {% endblock %}
+        </div>
+    </body>
+
+</html>
