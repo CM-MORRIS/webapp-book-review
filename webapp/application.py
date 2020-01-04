@@ -89,3 +89,7 @@ def logout():
 @app.route("/error")
 def error():
     return render_template("error.html", message="Username or Password Incorrect")
+
+@app.route("/search", methods=['POST'])
+def search():
+    return render_template("search.html", message="Searching for Book")

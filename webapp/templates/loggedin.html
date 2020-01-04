@@ -5,8 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    <h1></h1>
-    {{ message }}
-    <form action="{{ url_for('logout')}}" method="POST">
-      <button>Logout</button>
+  {{ message }}
+  <form action="{{ url_for('logout')}}" method="POST">
+    <button>Logout</button>
+  </form>
+
+  <form action="{{ url_for('search') }}" method="post">
+    <input type="text" name="book_search" placeholder="Search for Books">
+    <button>Search</button>
+  </form>
 {% endblock %}
