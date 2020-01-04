@@ -9,6 +9,7 @@
     </head>
 
     <body>
+      {{ message }}
         <div class="container">
             {% block body %}
               <form action="{{ url_for('register') }}" method="post">

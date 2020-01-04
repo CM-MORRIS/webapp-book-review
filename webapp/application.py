@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, redirect, escape, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -30,7 +30,9 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    return render_template("home.html")
+    if 'username' in session:
+        return redirect(url_for('loggedin'))
+    return render_template("home.html", message="You are not logged in")
 
 
 @app.route("/register", methods=["POST"])
@@ -42,7 +44,7 @@ def register():
     password = request.form.get("password")
 
     if not username or not email or not password:
-        return render_template("home.html")
+        return redirect(url_for('index'))
 
     db.execute("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)",
                 { "username": username, "email": email, "password": password })
@@ -51,25 +53,39 @@ def register():
 
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=['POST', 'GET'])
 def login():
-    USERNAME = request.form.get("username")
-    PASSWORD = request.form.get("password")
 
-    # if user and pass doesn't exist
-    if db.execute("SELECT * FROM users WHERE username = :USERNAME AND password = :PASSWORD",
-                    {"USERNAME": USERNAME, "PASSWORD": PASSWORD}).rowcount == 0:
-        return render_template("error.html", message="Username or Password Incorrect")
+    if request.method == 'POST':
+        USERNAME = request.form.get("username")
+        PASSWORD = request.form.get("password")
 
-    # if does exist
-    else:
-        return render_template("loggedin.html", message="Successfully Logged In")
+        # if user and pass doesn't exist
+        if db.execute("SELECT * FROM users WHERE username = :USERNAME AND password = :PASSWORD",
+            {"USERNAME": USERNAME, "PASSWORD": PASSWORD}).rowcount == 0:
+
+            return redirect(url_for('error'))
+
+        # if user and pass does exist
+        session['username'] = USERNAME
+        return redirect(url_for('loggedin'))
+
+    # if GET
+    return redirect(url_for('index'))
+
 
 
 @app.route("/loggedin")
 def loggedin():
-    return render_template("loggedin.html")
+    return render_template("loggedin.html", message=" %s Succesfully Logged In" % session['username'])
+
+
+@app.route("/logout", methods=['POST', 'GET'])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
 
 @app.route("/error")
 def error():
-    return render_template("error.html")
+    return render_template("error.html", message="Username or Password Incorrect")
