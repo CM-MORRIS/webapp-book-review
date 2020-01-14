@@ -31,7 +31,7 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 def index():
     if 'username' in session:
-        return redirect(url_for('loggedin'))
+        return redirect(url_for('search_page'))
     return render_template("home.html", message="You are not logged in")
 
 
@@ -68,16 +68,15 @@ def login():
 
         # if user and pass does exist
         session['username'] = USERNAME
-        return redirect(url_for('loggedin'))
+        return redirect(url_for('search_page'))
 
     # if GET
     return redirect(url_for('index'))
 
 
-
-@app.route("/loggedin")
-def loggedin():
-    return render_template("loggedin.html", message=" %s Succesfully Logged In" % session['username'])
+@app.route("/search_page")
+def search_page():
+    return render_template("search_page.html", message=" %s Successfully Logged In" % session['username'])
 
 
 @app.route("/logout", methods=['POST', 'GET'])
@@ -90,6 +89,29 @@ def logout():
 def error():
     return render_template("error.html", message="Username or Password Incorrect")
 
-@app.route("/search", methods=['POST'])
-def search():
-    return render_template("search.html", message="Searching for Book")
+
+@app.route("/search_results", methods=['POST', 'GET'])
+def search_results():
+
+    input = request.form.get("book_search")
+
+    if input:
+        query = "%" + request.form.get("book_search") + "%"
+
+        rows = db.execute("SELECT isbn, title, author, year FROM books WHERE \
+                            isbn ILIKE :query OR \
+                            title ILIKE :query OR \
+                            author ILIKE :query LIMIT 30",
+                            {"query": query})
+    else:
+        return render_template("search_results.html", message="No Books Found")
+
+
+    # if no search results found
+    if not rows:
+        print("no books found")
+        return render_template("search_results.html", message="No Books Found")
+
+    # show results
+    print("books found")
+    return render_template("search_results.html", books=rows)

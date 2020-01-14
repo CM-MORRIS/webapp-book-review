@@ -1,0 +1,16 @@
+{% extends "home.html" %}
+
+{% block title %}
+    Logged In
+{% endblock %}
+
+{% block body %}
+      {{ message }}
+      <ul>
+          {% for book in books %}
+              <li>
+                  ISBN: {{ book.isbn }} Title: {{ book.title }} Author: {{ book.author }}
+              </li>
+          {% endfor %}
+      </ul>
+{% endblock %}

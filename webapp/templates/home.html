@@ -8,6 +8,12 @@
         crossorigin="anonymous">
     </head>
 
+    <nav>
+      <form action="{{ url_for('logout')}}" method="POST">
+        <button>Logout</button>
+      </form>
+    </nav>
+
     <body>
       {{ message }}
         <div class="container">

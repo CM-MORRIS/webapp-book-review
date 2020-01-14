@@ -1,0 +1,16 @@
+{% extends "home.html" %}
+
+{% block title %}
+    Logged In
+{% endblock %}
+
+{% block body %}
+  {{ message }}
+<div>
+  <form name="book_search" action="{{ url_for('search_results') }}" method="post">
+      <input type="text" name="book_search" placeholder="Search for Book ISBN, Title, Author">
+      <button name="book_search">Search</button>
+  </form>
+</div>
+
+{% endblock %}
