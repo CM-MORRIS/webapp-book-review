@@ -11,7 +11,6 @@ res = requests.get("https://www.goodreads.com/book/review_counts.json", params=
                     {"key": "jRfUDJaEjyhztHw2UghHw", "isbns": "9781632168146"})
 print(res.json())
 
-
 app = Flask(__name__)
 
 # Check for environment variable
@@ -90,6 +89,7 @@ def error():
     return render_template("error.html", message="Username or Password Incorrect")
 
 
+# shows search results of books
 @app.route("/search_results", methods=['POST', 'GET'])
 def search_results():
 
@@ -115,3 +115,23 @@ def search_results():
     # show results
     print("books found")
     return render_template("search_results.html", books=rows)
+
+
+
+    # shows book information and reviews
+@app.route("/book_reviews/<int:isbn>", methods=['GET', 'POST'])
+def book_reviews(isbn):
+
+    return render_template("book_reviews.html", message=isbn)
+
+          #<!-- <td> <a href="{{ url_for('book_reviews', isbn=book.isbn) }}"></a> </td> <-->
+          #<!--<a href="{{ url_for('flight', flight_id=flight.id) }}"><-->
+
+
+        #res = requests.get("https://www.goodreads.com/book/isbn/ISBN",
+        #                    params={"format": isbn_})
+
+        #if res.status_code != 200:
+        #    raise Exception("ERROR: API request unsuccessful.")
+
+        #data = res.json()

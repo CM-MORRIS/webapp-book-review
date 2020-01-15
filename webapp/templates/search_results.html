@@ -5,12 +5,37 @@
 {% endblock %}
 
 {% block body %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
       {{ message }}
-      <ul>
+      <table>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Year</th>
           {% for book in books %}
-              <li>
-                  ISBN: {{ book.isbn }} Title: {{ book.title }} Author: {{ book.author }}
-              </li>
+              <tr>
+                  <td> <a href="{{ url_for('book_reviews', isbn=book.isbn) }}"> {{ book.isbn }} </a> </td>
+                  <td> {{ book.title }}</td>
+                  <td> {{ book.author }}</td>
+                  <td> {{ book.year }}</td>
+
+              </tr>
           {% endfor %}
-      </ul>
+      </table>
 {% endblock %}
