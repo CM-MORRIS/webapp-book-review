@@ -1,15 +1,10 @@
 import os
+import requests
 
-from flask import Flask, session, render_template, request, redirect, escape, url_for
+from flask import Flask, session, render_template, request, redirect, escape, url_for, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-# for API
-import requests
-res = requests.get("https://www.goodreads.com/book/review_counts.json", params=
-                    {"key": "jRfUDJaEjyhztHw2UghHw", "isbns": "9781632168146"})
-print(res.json())
 
 app = Flask(__name__)
 
@@ -118,20 +113,18 @@ def search_results():
 
 
 
-    # shows book information and reviews
-@app.route("/book_reviews/<int:isbn>", methods=['GET', 'POST'])
+# shows book information and reviews
+@app.route("/book_reviews/<isbn>", methods=['GET', 'POST'])
 def book_reviews(isbn):
 
-    return render_template("book_reviews.html", message=isbn)
+    # # Query the api with key and ISBN as parameters
+    res = requests.get("https://www.goodreads.com/book/review_counts.json",
+                        params={"key": "qDkabMMSx5fQ9EIdgWFfg", "isbns": isbn})
 
-          #<!-- <td> <a href="{{ url_for('book_reviews', isbn=book.isbn) }}"></a> </td> <-->
-          #<!--<a href="{{ url_for('flight', flight_id=flight.id) }}"><-->
+    if res.status_code != 200:
+        raise Exception("ERROR: API request unsuccessful.")
 
+    # Convert the response to JSON
+    data = res.json()
 
-        #res = requests.get("https://www.goodreads.com/book/isbn/ISBN",
-        #                    params={"format": isbn_})
-
-        #if res.status_code != 200:
-        #    raise Exception("ERROR: API request unsuccessful.")
-
-        #data = res.json()
+    return jsonify(data)
